@@ -22,5 +22,8 @@ BR-09 Cancelling a Pending or Paid order restores stock. (derived)
 
 BR-10 OrderItem keeps the price paid even if the product price changes later. (derived)
 
-BR-11 Payment amount must equal the order total. (derived)
+BR-11 Payment amount must equal the order total. (derived),,,
 '''
+
+class ValidationError(Exception):
+    pass
