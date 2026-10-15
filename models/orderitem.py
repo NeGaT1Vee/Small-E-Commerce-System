@@ -12,10 +12,21 @@ class OrderItem():
             raise ValidationError("Quantity must be a whole number greater than zero.")
         
         self.__product = product
-        self.__quantity = quantity
-        self.__unit_price = unit_price
+        self._quantity = quantity
+        self._unit_price = unit_price
+
+    @property
+    def quantity(self):
+        return self._quantity 
+
+    @property
+    def unit_price(self):
+        return self._unit_price  
 
 
     def subtotal(self):
 
-        return self.__unit_price * self.__quantity    
+        return self.unit_price * self.quantity    
+
+    ## x = Product("001" , "pen" , 64.5 , 20 , books)
+    # y = OrderItem(x , 5 , product.price)
