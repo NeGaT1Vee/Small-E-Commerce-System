@@ -21,7 +21,7 @@ class payment(ABC):
     @payment_id.setter
     def payment_id(self,value):
         if not isinstance(value,str):
-            raise TypeError('pyment id has to be str')
+            raise TypeError('payment id has to be str')
         if not value.strip():
             raise ValueError("payment id can't be empty")
 
