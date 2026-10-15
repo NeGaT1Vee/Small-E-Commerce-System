@@ -1,6 +1,6 @@
 from models.product import Product
 from exceptions import ValidationError
-from models.category import Category
+
 
 
 
