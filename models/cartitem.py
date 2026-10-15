@@ -13,7 +13,7 @@ class CartItem():
             raise ValidationError("the cart is empty , please fill it") 
 
         self._product = product
-        slef.quantity = quantity
+        self.quantity = quantity
 
 
     @property
@@ -34,5 +34,6 @@ class CartItem():
 
     def subtotal(self):
 
-        return self_product.price * self._quantity
+        return self._product.price * self._quantity
+
 
