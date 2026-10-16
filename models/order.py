@@ -1,11 +1,14 @@
+from models.category import Category
+from models.payment import payment
+from models.product import Product
+from . import cart
 from .Enums.enums import OrderStatus
 from . import date
-from . import orderitem , payment
+from models.orderitem import OrderItem   
 
-class orders (order_item,pyment):
-    def __init__(self,order_id:str,customer_id:str,created_on:date,status:OrderStatus.PENDING,discount_rate:float,items:orderitem,payment:payment):
+class Order():
+    def __init__(self,order_id:str,customer_id:str,created_on:date,status:OrderStatus.PENDING,discount_rate:float,items:OrderItem,payment:payment):
         
-        super().__init__()
         self.order_id = order_id
         self.customer_id = customer_id
         self.created_on = created_on
@@ -74,7 +77,7 @@ class orders (order_item,pyment):
             raise ValueError ("discount rate should be between 0 and 1")
         self.__discount_rate = value
 
-
+    
     
 
 
@@ -84,18 +87,51 @@ class orders (order_item,pyment):
 
 
 
+    @classmethod
+    def from_cart(cls,order_id:str,customer_id:str,cart:cart):
+        order_items = []
+        for item in cart.items:
+            order_item = OrderItem(item.product,item.quantity,item.unit_price)
+            order_items.append(order_item)
+        return cls(order_id=order_id,customer_id=customer_id,items=order_items,status=OrderStatus.PENDING,discount_rate=0.0,payment=None,created_on=date.today())
+        
+        
+    def total(self):
+        sub = sum(item.subtotal() for item in self.__items)
+        discounted_amount = sub * self.discount_rate
+        return max(0.0, sub - discounted_amount)
+        
 
-        def from_cart(self,order_id:str,customer_id:str,cart:cart):
-            pass
 
-        def total():
-            pass
+    def apply_discount(self,rate:float):
+       self.discount_rate = rate
 
-        def apply_discount(self,rate:float):
-            pass
 
-        def mark_paid(payment:payment):
-            pass
+    def mark_paid(self,payment:payment):
+        if payment.get_amount() < self.total():
+            raise ValueError("Payment amount is less than the order total.")
+        if not payment.process():
+            raise ValueError("Payment processing failed.")
+        self.__payment = payment
+        self.status = OrderStatus.PAID
 
-        def cancel():
-            pass
+    def cancel(self):
+        self.status = OrderStatus.CANCELLED
+        for item in self.__items:
+            item.product.increase_stock(item.quantity)
+
+
+
+
+# x = Order(order_id="ORD-001", customer_id="CUS-001", created_on=date.today(), status=OrderStatus.PENDING, discount_rate=0.0, items=[], payment=None)
+
+# print(f"Order ID: {x.order_id}")
+# books = Category(category_id="CAT-001", name="Books")
+# z = Product("001" , "pen" , 64.5 , 20,books)
+
+# y = OrderItem(z , 5 , 64.5)
+# print(f"Order Item Product: {z.name}, Quantity: {y.quantity}, Unit Price: {y.unit_price}, Subtotal: {y.subtotal()}")
+
+
+
+# print(x.total([y]))

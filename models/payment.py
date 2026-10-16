@@ -118,7 +118,7 @@ class CashPayment(payment):
 
     @tendered.setter
     def tendered(self, value: float):
-        if not isinstance(value, (int, float)) or value < self.amount:
+        if not isinstance(value, float) or value < self.amount:
             raise ValueError("Tendered cash cannot be less than the amount due.")
         self.__tendered = float(value)
 

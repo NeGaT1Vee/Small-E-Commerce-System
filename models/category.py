@@ -14,7 +14,7 @@ class Category():
         self._category_id = category_id
         self.name = name 
 
-    property
+    @property
     def category_id(self):
         return self._category_id
 
@@ -33,6 +33,6 @@ class Category():
     def count_products(self , products :list):
         counter = 0
         for product in products:
-            if product.category.category_id == self.__category_id:
+            if product.category.category_id == self._category_id:
                 counter +=1
         return counter

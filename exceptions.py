@@ -27,3 +27,9 @@ BR-11 Payment amount must equal the order total. (derived),,,
 
 class ValidationError(Exception):
     pass
+
+class TypeError(Exception):
+    pass
+
+class ValueError(Exception):
+    pass

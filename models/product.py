@@ -70,7 +70,7 @@ class Product():
         if not isinstance(value,int) or value <=0 :
             raise ValidationError("value must be whole number and bigger than zero")
            
-        self.__stock += value
+        self._stock += value
         return(self._stock)
 
     def to_dict(self):
@@ -96,12 +96,26 @@ class Product():
 #print(x.reduce_stock(7))
 #print(x.increase_stock(7))
 
-books = Category("CAT002", "Books")
-x = Product("1001", "PEN", 2.0, 20, books)
+##books = Category("CAT002", "Books")
+#x = Product("1001", "PEN", 2.0, 20, books)
 
-print(x)                  # PEN - $2.00 (20 in stock)
-x.reduce_stock(5)
-print(x.stock)            # 15
-print(x.to_dict())        # {'product_id': '1001', 'name': 'PEN', ...}
+#print(x)                  # PEN - $2.00 (20 in stock)
+#x.reduce_stock(5)
+#print(x.stock)            # 15
+#print(x.to_dict())        # {'product_id': '1001', 'name': 'PEN', ...}
 
- 
+
+books = Category("CAT001", "Books")
+toys  = Category("CAT002", "Toys")
+games = Category("CAT003", "Games")
+
+products = [
+    Product("1", "Novel",    10.0, 5, books),
+    Product("2", "Textbook", 30.0, 8, books),
+    Product("3", "Robot",    25.0, 3, toys),
+] 
+
+#print(books.category_id , books.name)
+#print("Books:", books.count_products(products))
+#books.name =123 #gives error 
+#print(books.name) 
