@@ -7,11 +7,11 @@ from file_manager.file_manager import FileManager
 
 class Store:
     def __init__(self, customer: list[Customer], product: list[Product], category: list[Category], order: list[Order], file_manager: FileManager):
-        self.__customer = list(customer)
-        self.__product = list(product)
-        self.__category = list(category)
-        self.__order = list(order)
-        self.__file_manager = file_manager
+        self.customer = list(customer)
+        self.product = list(product)
+        self.category = list(category)
+        self.order = list(order)
+        self.file_manager = file_manager
 
     @property
     def customer(self):
@@ -33,6 +33,28 @@ class Store:
     def file_manager(self):
         return self.__file_manager
 
+
+    @customer.setter
+    def customer(self,value):
+        self.__customer = value
+
+    @product.setter
+    def product(self,value):
+        self.__product = value
+
+    @category.setter
+    def category(self,value):
+        self.__category = value
+
+    @order.setter
+    def order(self,value):
+        self.__order = value
+
+    @file_manager.setter
+    def file_manager(self,value):
+        self.__file_manager = value
+    
+
 #---------------------------------------------------
 # Methods Products
 # ---------------------------------------------------
@@ -41,13 +63,13 @@ class Store:
         if product.product_id in [p.product_id for p in self.__product]:
             raise ValueError(f"Product with ID {product.product_id} already exists.")
         self.__product.append(product)
-        self.__file_manager.save_products(self.__product)
+        # self.__file_manager.save_products(self.__product)
 
     def update_product(self, product_id: str, updated_product: Product):
         for i, product in enumerate(self.__product):
             if product.product_id == product_id:
                 self.__product[i] = updated_product
-                self.__file_manager.save_products(self.__product)
+                # self.__file_manager.save_products(self.__product)
                 return
         raise ValueError(f"Product with ID {product_id} not found.")
 
@@ -55,13 +77,13 @@ class Store:
         for i, product in enumerate(self.__product):
             if product.product_id == product_id:
                 del self.__product[i]
-                self.__file_manager.save_products(self.__product)
+                # self.__file_manager.save_products(self.__product)
                 return
         raise ValueError(f"Product with ID {product_id} not found.")
 
     def get_product(self, product_name: str) -> Product:
         for product in self.__product:
-            if product.product_name == product_name:
+            if product.name == product_name:
                 return product
         raise ValueError(f"Product with name {product_name} not found.")
 
@@ -76,5 +98,8 @@ class Store:
 #Methods Cart & chickout
 #---------------------------------------------------
 
-    
-    
+
+
+#---------------------------------------------------
+# Methods cancel order , save all
+#---------------------------------------------------
