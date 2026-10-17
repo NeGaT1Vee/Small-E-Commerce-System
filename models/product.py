@@ -46,7 +46,7 @@ class Product():
     @price.setter
     def price(self , value : float):
 
-        if value <= 0 :
+        if not isinstance(value,(int,float))  or value <= 0 :
             raise ValidationError("the price must be bigger than zero")    
         self._price = value
 
@@ -70,8 +70,8 @@ class Product():
         if not isinstance(value,int) or value <=0 :
             raise ValidationError("value must be whole number and bigger than zero")
            
-        self.__stock += value
-        return(self._stock)
+        self._stock += value
+        return self._stock
 
     def to_dict(self):
         return {
@@ -90,6 +90,20 @@ class Product():
             raise ValidationError(f"Category [{data['category_id']}] not found.")
         return cls(data["product_id"], data["name"], data["price"], data["stock"], category)
 
+
+
+    ## these are neccessary because in store when using the searchproduct method 
+    ## it will give the reuslt as a memory location not the actual answer we want
+    def __str__(self) -> str:
+        return f"{self._name} - ${self._price:.2f} ({self._stock} in stock)"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+
+
+
 ## test for the product class with its functions :
 #x = Product("1001" , "pen" , 248.5 , 20)
 
@@ -105,15 +119,15 @@ class Product():
 #print(x.to_dict())        # {'product_id': '1001', 'name': 'PEN', ...}
 
 
-books = Category("CAT001", "Books")
-toys  = Category("CAT002", "Toys")
-games = Category("CAT003", "Games")
+#books = Category("CAT001", "Books")
+#toys  = Category("CAT002", "Toys")
+#games = Category("CAT003", "Games")
 
-products = [
-    Product("1", "Novel",    10.0, 5, books),
-    Product("2", "Textbook", 30.0, 8, books),
-    Product("3", "Robot",    25.0, 3, toys),
-] 
+#products = [
+ #   Product("1", "Novel",    10.0, 5, books),
+  #  Product("2", "Textbook", 30.0, 8, books),
+   # Product("3", "Robot",    25.0, 3, toys),
+#] 
 
 #print(books.category_id , books.name)
 #print("Books:", books.count_products(products))
