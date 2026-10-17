@@ -3,7 +3,7 @@ import os
 
 class FileManager:
     def __init__(self, data_dir:str):
-        self.__data_dir = data_dir
+        self.data_dir = data_dir
 
     @property
     def data_dir(self):
