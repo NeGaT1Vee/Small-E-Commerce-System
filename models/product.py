@@ -62,7 +62,7 @@ class Product():
             raise ValidationError("value must be whole number and bigger than zero")
         
         if value > self._stock:
-            raise ValidationError(f"there is only this {self.__stock} number in stock")
+            raise ValidationError(f"there is only this {self._stock} number in stock")
         self._stock -= value
         return(f"stock updated to{self._stock}") 
 

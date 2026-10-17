@@ -10,10 +10,14 @@ class OrderItem():
         
         if not isinstance(quantity, int) or quantity <= 0:
             raise ValidationError("Quantity must be a whole number greater than zero.")
+
+        if not isinstance(unit_price , (int,float)) or unit_price <=0:
+                    raise ValidationError("pirce must be number greater than zero")
+
         
         self._product = product
         self._quantity = quantity
-        self._unit_price = unit_price
+        self._unit_price = float(unit_price)
 
     @property
     def product(self):
