@@ -5,5 +5,12 @@
     "price": 2.5,
     "stock": 10,
     "category_id": "CAT001"
+  },
+  {
+    "product_id": "Product01",
+    "name": "Tshirt",
+    "price": 300.0,
+    "stock": 20,
+    "category_id": "CAT002"
   }
 ]

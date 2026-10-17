@@ -34,6 +34,22 @@ class Store():
     def orders(self):
         return list(self._orders)
 
+    def add_category(self, new_category: Category):
+        if not isinstance(new_category, Category):
+            raise ValidationError("you must add a valid category")
+        for category in self._categories:
+            if category.category_id == new_category.category_id:
+                raise ValidationError("a category with this id already exists")
+        self._categories.append(new_category)
+
+    def add_customer(self, new_customer: Customer):
+        if not isinstance(new_customer, Customer):
+            raise ValidationError("you must add a valid customer")
+        for customer in self._customers:
+            if customer.customer_id == new_customer.customer_id:
+                raise ValidationError("a customer with this id already exists")
+        self._customers.append(new_customer)    
+
 
     def add_product(self, NewProduct : Product):
         if not isinstance(NewProduct , Product):
