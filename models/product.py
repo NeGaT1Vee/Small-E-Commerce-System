@@ -44,4 +44,5 @@ class Product:
                   raise TypeError("stock must be int")
             else:
                  new_stock=self.stock
-    
+#methods:-
+#1-
