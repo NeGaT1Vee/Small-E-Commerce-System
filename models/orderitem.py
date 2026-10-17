@@ -11,9 +11,13 @@ class OrderItem():
         if not isinstance(quantity, int) or quantity <= 0:
             raise ValidationError("Quantity must be a whole number greater than zero.")
         
-        self.__product = product
+        self._product = product
         self._quantity = quantity
         self._unit_price = unit_price
+
+    @property
+    def product(self):
+        return self._product
 
     @property
     def quantity(self):

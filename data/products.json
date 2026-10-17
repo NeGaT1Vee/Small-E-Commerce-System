@@ -1,0 +1,9 @@
+[
+  {
+    "product_id": "1",
+    "name": "Pen",
+    "price": 2.5,
+    "stock": 10,
+    "category_id": "CAT001"
+  }
+]

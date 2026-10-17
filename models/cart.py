@@ -1,4 +1,8 @@
-from src.models.Entities import CartItem,Product 
+from models.cartitem import CartItem
+from models.product import Product
+from exceptions import ValidationError
+
+
 class Cart:
     def __init__(self,items:list[CartItem]):
         self.items=items
@@ -17,7 +21,12 @@ class Cart:
             
     #methods:-
     #1-add_item
-    def add_item(self,product:Product,quantity):
+    def add_item(self,product:Product,quantity : int):
+        if not isinstance(product, Product):
+            raise ValidationError("You must add a valid product.")
+        if not isinstance(quantity, int) or quantity <= 0:
+            raise ValidationError("The quantity must be a whole number greater than zero.")
+        
         item=CartItem(product,quantity)
         self.__items.append(item)
     #2-remove item
