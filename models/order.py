@@ -122,7 +122,13 @@ class Order():
             raise ValueError("Payment amount is less than the order total.")
         if not payment.process():
             raise ValueError("Payment processing failed.")
-        
+
+        for item in self._items:
+            if not item.product.is_in_stock(item.quantity):
+                raise ValidationError(f"not enough stock for {item.product.name}")
+
+        for item in self._items:
+            item.product.reduce_stock(item.quantity)
         
         self._payment = payment
         self._status = OrderStatus.PAID
