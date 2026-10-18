@@ -6,5 +6,13 @@
   {
     "category_id": "CAT002",
     "name": "Clothes"
+  },
+  {
+    "category_id": "CAT003",
+    "name": "Food"
+  },
+  {
+    "category_id": "CAT004",
+    "name": "Drinks"
   }
 ]
