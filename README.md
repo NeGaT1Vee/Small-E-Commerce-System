@@ -16,7 +16,7 @@ A fully-functional object-oriented e-commerce system built in Python with a grap
 The Small E-Commerce System is a complete implementation of an online store with:
 - Multi-category product catalog management
 - Customer cart and order processing
-- Multiple payment methods (Cash, Card)
+- Multiple payment methods (Cash, Card, Wallet)
 - Dynamic discount system (percentage and fixed-amount)
 - Persistent file-based data storage
 - Full audit trail for order history
@@ -761,32 +761,11 @@ chmod 644 data/*.json
 
 ---
 
-## 12. Contributing
-
-### 12.1 Code Standards
-
-- Follow PEP 8 style guide
-- Maintain 90%+ test coverage
-- Write docstrings for all public methods
-- Use type hints for all parameters
-
-### 12.2 Pull Request Process
-
-1. Create feature branch from `develop`
-2. Write tests for new functionality
-3. Ensure all tests pass (`pytest`)
-4. Submit PR with clear description
-5. Address code review feedback
-6. Merge to `develop`, squash commits
-
----
-
-## 13. Contact & Support
-
+## 12. Contact & Support
 | Contact Method | Details |
 |---|---|
 | **Repository Issues** | [GitHub Issues](https://github.com/NeGaT1Vee/pyhon-project/issues) |
-| **Author** | [NeGaT1Vee](https://github.com/NeGaT1Vee) |
+| **Authors** | [NeGaT1Vee](https://github.com/NeGaT1Vee) • [Mohamed Osama](https://github.com/mohamedosamahieba2892005-crypto) • [Osama Hatem](https://github.com/osama1hatem2abdelkreem3) |
 | **Email** | Contact via GitHub |
 
 ---
