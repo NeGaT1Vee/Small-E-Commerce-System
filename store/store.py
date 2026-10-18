@@ -92,7 +92,7 @@ class Store():
     ##-------------------------------------------------------------
 
 
-    def checkout(self , cid : str , method : str):
+    def checkout(self , cid : str , method : str , discount_rate=0.0):
 
         customer = self._find_customer(cid)
         cart = customer.cart
@@ -102,6 +102,7 @@ class Store():
 
         order_id = f"ORD-{len(self._orders) + 1:03}"
         order = Order.from_cart(order_id , cid , cart )
+        order.apply_discount(discount_rate)
         total = float(order.total())
         if method == "card":
             payment = CardPayment(f"PAY-{order_id}", total, date.today(), "0000")

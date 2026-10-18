@@ -294,6 +294,13 @@ class StoreApp:
         self.card_entry.grid(row=0, column=3, padx=3)
         ttk.Button(pay, text="Checkout", command=self.checkout).grid(row=0, column=4, padx=15)
 
+        ttk.Label(pay, text="Discount %:").grid(row=1, column=0, padx=5, pady=3)
+        self.discount_entry = ttk.Entry(pay, width=8)
+        self.discount_entry.insert(0, "0")
+        self.discount_entry.grid(row=1, column=1, padx=3)
+
+
+
     def get_selected_customer(self):
         text = self.customer_combo.get()
         if text == "":
@@ -363,12 +370,21 @@ class StoreApp:
             messagebox.showerror("Error", "Choose a customer first")
             return
 
+        # read the discount box (10 means 10%)
+        try:
+            discount = float(self.discount_entry.get()) / 100
+        except ValueError:
+            messagebox.showerror("Error", "Discount must be a number, like 10 for 10%")
+            return
+
         try:
             if self.payment_var.get() == "card":
                 order = self.store.checkout(customer.customer_id, "card",
-                                            card_last4=self.card_entry.get())
+                                            card_last4=self.card_entry.get(),
+                                            discount_rate=discount)
             else:
-                order = self.store.checkout(customer.customer_id, "cash")
+                order = self.store.checkout(customer.customer_id, "cash",
+                                            discount_rate=discount)
         except ERRORS as error:
             self.show_error(error)
             return
@@ -377,6 +393,8 @@ class StoreApp:
                             "Order " + order.order_id + " is paid.\nTotal: $" +
                             format(order.total(), ".2f"))
         self.card_entry.delete(0, tk.END)
+        self.discount_entry.delete(0, tk.END)
+        self.discount_entry.insert(0, "0")
         self.refresh_all()
 
     def refresh_combos(self):
