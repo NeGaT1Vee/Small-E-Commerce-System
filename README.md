@@ -617,58 +617,12 @@ pytest tests/ --cov=models --cov=store --cov-report=html
 | `file_manager/` | 15+ I/O tests | 90% |
 | `gui/` | 10+ functional tests | 70% |
 
----
-
-## 8. API Reference
-
-### 8.1 Store Facade (Main Entry Point)
-
-```python
-class Store:
-    # Customer Management
-    register_customer(email: str, password: str, name: str) → Customer
-    login_customer(email: str, password: str) → Customer
-    get_customer(customer_id: str) → Customer
-    
-    # Product Management
-    add_product(name: str, price: float, category: Category, stock: int) → Product
-    get_all_products() → List[Product]
-    get_products_by_category(category: Category) → List[Product]
-    
-    # Cart Operations
-    add_to_cart(customer: Customer, product: Product, quantity: int) → None
-    remove_from_cart(customer: Customer, product: Product) → None
-    clear_cart(customer: Customer) → None
-    
-    # Checkout
-    checkout(customer: Customer, payment: Payment) → Order
-    get_order_history(customer: Customer) → List[Order]
-    
-    # Administrative
-    get_all_categories() → List[Category]
-    get_all_orders() → List[Order]
-```
-
-### 8.2 Custom Exceptions
-
-```python
-# Base exception
-class ECommerceException(Exception): pass
-
-# Specific exceptions
-class ValidationError(ECommerceException): pass
-class BusinessRuleError(ECommerceException): pass
-class NotFoundError(ECommerceException): pass
-class PersistenceError(ECommerceException): pass
-class InsufficientStockError(BusinessRuleError): pass
-class InvalidPaymentError(BusinessRuleError): pass
-```
 
 ---
 
-## 9. Data Persistence
+## 8. Data Persistence
 
-### 9.1 JSON Schema
+### 8.1 JSON Schema
 
 **customers.json:**
 ```json
@@ -718,7 +672,7 @@ class InvalidPaymentError(BusinessRuleError): pass
 }
 ```
 
-### 9.2 Transaction Safety
+### 8.2 Transaction Safety
 
 All write operations follow ACID principles:
 1. **Atomicity:** All-or-nothing checkout (stock deduction rollback on failure)
@@ -728,9 +682,9 @@ All write operations follow ACID principles:
 
 ---
 
-## 10. Development Workflow
+## 9. Development Workflow
 
-### 10.1 Development Setup
+### 9.1 Development Setup
 
 ```bash
 # Install dev dependencies
@@ -743,7 +697,7 @@ pre-commit install
 git flow init
 ```
 
-### 10.2 Code Organization Principles
+### 9.2 Code Organization Principles
 
 1. **One class per file** (except related value objects)
 2. **Type hints** on all method signatures
@@ -752,7 +706,7 @@ git flow init
 5. **No circular imports** between layers
 6. **Custom exceptions** for domain errors
 
-### 10.3 Git Workflow
+### 9.3 Git Workflow
 
 ```bash
 # Feature branch
@@ -768,9 +722,9 @@ git flow release finish 1.1.0
 
 ---
 
-## 11. Known Limitations & Future Work
+## 10. Known Limitations & Future Work
 
-### 11.1 Current Limitations
+### 10.1 Current Limitations
 
 | Limitation | Impact | Workaround |
 |-----------|--------|-----------|
@@ -783,9 +737,9 @@ git flow release finish 1.1.0
 
 ---
 
-## 12. Troubleshooting
+## 11. Troubleshooting
 
-### 12.1 Common Issues
+### 11.1 Common Issues
 
 **Issue:** `ModuleNotFoundError: No module named 'PyQt5'`
 ```bash
@@ -807,16 +761,16 @@ chmod 644 data/*.json
 
 ---
 
-## 13. Contributing
+## 12. Contributing
 
-### 13.1 Code Standards
+### 12.1 Code Standards
 
 - Follow PEP 8 style guide
 - Maintain 90%+ test coverage
 - Write docstrings for all public methods
 - Use type hints for all parameters
 
-### 13.2 Pull Request Process
+### 12.2 Pull Request Process
 
 1. Create feature branch from `develop`
 2. Write tests for new functionality
@@ -827,13 +781,7 @@ chmod 644 data/*.json
 
 ---
 
-## 14. License
-
-MIT License - See LICENSE file for details
-
----
-
-## 15. Contact & Support
+## 13. Contact & Support
 
 | Contact Method | Details |
 |---|---|
@@ -843,19 +791,6 @@ MIT License - See LICENSE file for details
 
 ---
 
-## 16. References
-
-[1] "Object-Oriented Programming in Python," (n.d.). Retrieved from Python Documentation.
-
-[2] "Design Patterns: Elements of Reusable Object-Oriented Software," E. Gamma, R. Helm, R. Johnson, and J. Vlissides, Addison-Wesley, 1994.
-
-[3] "Domain-Driven Design," E. Evans, Addison-Wesley, 2003.
-
-[4] "PyQt5 Documentation," Riverbank Computing Ltd., (n.d.). Retrieved from https://www.riverbankcomputing.com/static/Docs/PyQt5/
-
-[5] "PEP 8 – Style Guide for Python Code," G. van Rossum, B. Warsaw, and N. Coghlan, Python Enhancement Proposals, (n.d.). Retrieved from https://www.python.org/dev/peps/pep-0008/
-
----
 
 **Document Version:** 1.0  
 **Last Updated:** October 2026  
