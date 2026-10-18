@@ -786,7 +786,7 @@ chmod 644 data/*.json
 | Contact Method | Details |
 |---|---|
 | **Repository Issues** | [GitHub Issues](https://github.com/NeGaT1Vee/pyhon-project/issues) |
-| **Author** | [NeGaT1Vee](https://github.com/NeGaT1Vee) |
+| **Author** | [NeGaT1Vee](https://github.com/NeGaT1Vee) | [Mohamed osama](https://github.com/mohamedosamahieba2892005-crypto) | [Osama Hatem](https://github.com/osama1hatem2abdelkreem3)
 | **Email** | Contact via GitHub |
 
 ---
