@@ -10,14 +10,14 @@
     "product_id": "Product01",
     "name": "Tshirt",
     "price": 300.0,
-    "stock": 20,
+    "stock": 18,
     "category_id": "CAT002"
   },
   {
     "product_id": "Product02",
     "name": "CocaCola",
     "price": 15.0,
-    "stock": 100,
+    "stock": 95,
     "category_id": "CAT004"
   }
 ]
