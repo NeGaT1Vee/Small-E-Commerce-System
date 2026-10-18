@@ -761,27 +761,7 @@ chmod 644 data/*.json
 
 ---
 
-## 12. Contributing
-
-### 12.1 Code Standards
-
-- Follow PEP 8 style guide
-- Maintain 90%+ test coverage
-- Write docstrings for all public methods
-- Use type hints for all parameters
-
-### 12.2 Pull Request Process
-
-1. Create feature branch from `develop`
-2. Write tests for new functionality
-3. Ensure all tests pass (`pytest`)
-4. Submit PR with clear description
-5. Address code review feedback
-6. Merge to `develop`, squash commits
-
----
-
-## 13. Contact & Support
+## 12. Contact & Support
 
 | Contact Method | Details |
 |---|---|
