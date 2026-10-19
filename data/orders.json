@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "order_id": "ORD-001",
+    "customer_id": "C1",
+    "created_on": "2026-10-19",
+    "status": "PAID",
+    "discount_rate": 0.0,
+    "items": [
+      {
+        "product_id": "Product02",
+        "name": "CocaCola",
+        "quantity": 15,
+        "unit_price": 15.0
+      }
+    ],
+    "total": 225.0,
+    "payment": {
+      "type": "CashPayment",
+      "payment_id": "PAY-ORD-001",
+      "amount": 225.0,
+      "paid_on": "2026-10-19"
+    }
+  }
+]

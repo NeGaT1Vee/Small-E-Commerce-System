@@ -24,6 +24,10 @@ class Order():
     def payment(self):
         return self._payment
     
+    @property
+    def items(self):
+        return list(self._items)
+
     
     @property
     def order_id(self):
