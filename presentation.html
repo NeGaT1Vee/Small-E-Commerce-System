@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Architecture - Interactive Presentation</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-x: hidden;
+        }
+
+        .font-mono-code {
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Dynamic Theme Gradients per Category */
+        body.theme-0 { background: radial-gradient(circle at 20% 20%, #1e1b4b, #0f172a, #020617); }
+        body.theme-1 { background: radial-gradient(circle at 80% 20%, #064e3b, #0f172a, #020617); }
+        body.theme-2 { background: radial-gradient(circle at 50% 80%, #701a75, #0f172a, #020617); }
+        body.theme-3 { background: radial-gradient(circle at 10% 90%, #1e3a8a, #0f172a, #020617); }
+        body.theme-4 { background: radial-gradient(circle at 90% 90%, #78350f, #0f172a, #020617); }
+
+        /* Glassmorphism Slide Cards */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.82);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(56, 189, 248, 0.15);
+        }
+
+        /* Slide Transition Animations */
+        .slide-frame {
+            display: none;
+            opacity: 0;
+            transform: translateY(24px) scale(0.96);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .slide-frame.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Custom Scrollbar for Code & Cards */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(56, 189, 248, 0.3);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(56, 189, 248, 0.6);
+        }
+
+        /* Print styles for slide export */
+        @media print {
+            body {
+                background: #020617 !important;
+                color: #f8fafc !important;
+                overflow: visible !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .slide-frame {
+                display: flex !important;
+                opacity: 1 !important;
+                transform: none !important;
+                page-break-after: always;
+                height: 90vh !important;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body class="theme-0 text-slate-100 min-h-screen flex flex-col justify-between items-center p-4 md:p-6 select-none">
+
+    <!-- Top Bar Header -->
+    <header class="w-full max-w-6xl flex items-center justify-between py-3 px-6 glass-card rounded-2xl mb-4 no-print">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/30">
+                <i class="fa-solid fa-store text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-base md:text-lg text-sky-400 tracking-tight leading-tight">E-Commerce Architecture</h1>
+                <p class="text-xs text-slate-400">Modular System Design & Python Backend Engine</p>
+            </div>
+        </div>
+
+        <!-- Action Buttons & Quick Nav -->
+        <div class="flex items-center gap-2 md:gap-3">
+            <button onclick="toggleGridModal()" title="View All Slides Grid" class="px-3 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/80 text-xs font-semibold flex items-center gap-2 transition">
+                <i class="fa-solid fa-border-all"></i>
+                <span class="hidden sm:inline">Overview</span>
+            </button>
+            <button onclick="window.print()" title="Print / Export PDF" class="px-3 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/80 text-xs font-semibold flex items-center gap-2 transition">
+                <i class="fa-solid fa-print"></i>
+                <span class="hidden sm:inline">Export PDF</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Presentation Container -->
+    <main class="w-full max-w-6xl flex-1 flex flex-col justify-center items-center relative my-auto">
+        
+        <!-- SLIDE 1 -->
+        <div class="slide-frame active glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="0" data-theme="theme-0">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md shadow-blue-500/20">
+                        <i class="fa-solid fa-layer-group mr-1.5"></i> Slide 01 / 22 • Core Overview
+                    </span>
+                    <span class="text-xs text-slate-400"><i class="fa-solid fa-code mr-1"></i> Python 3.11+ Backend</span>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-sky-400 mb-3 tracking-tight">Modular E-Commerce Engine Architecture</h2>
+                <p class="text-slate-300 text-base md:text-lg mb-8 font-light border-b border-slate-700/60 pb-4">
+                    A comprehensive walkthrough of a clean, object-oriented, decoupled commerce engine built from scratch.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
+                    <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 flex items-start gap-4">
+                        <div class="p-3 bg-sky-500/10 text-sky-400 rounded-xl"><i class="fa-solid fa-cubes text-xl"></i></div>
+                        <div>
+                            <h3 class="font-semibold text-sm text-slate-200">Domain Modeling</h3>
+                            <p class="text-xs text-slate-400 mt-1">Robust OOP representation of Products, Carts, Orders, and Payments.</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 flex items-start gap-4">
+                        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl"><i class="fa-solid fa-database text-xl"></i></div>
+                        <div>
+                            <h3 class="font-semibold text-sm text-slate-200">Local Persistence</h3>
+                            <p class="text-xs text-slate-400 mt-1">Zero external database dependency via an automated JSON FileManager.</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 flex items-start gap-4">
+                        <div class="p-3 bg-purple-500/10 text-purple-400 rounded-xl"><i class="fa-solid fa-desktop text-xl"></i></div>
+                        <div>
+                            <h3 class="font-semibold text-sm text-slate-200">Interactive GUI</h3>
+                            <p class="text-xs text-slate-400 mt-1">Complete front-end integration with real-time state feedback.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Authors Footer Banner -->
+            <div class="mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                    <i class="fa-solid fa-users text-sky-400"></i>
+                    <span class="font-semibold text-slate-300">Engineered By:</span>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-sky-500/30 text-xs font-semibold text-sky-300 flex items-center gap-2">
+                        <i class="fa-solid fa-user-gear text-sky-400"></i> Osama Hatem
+                    </span>
+                    <span class="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-sky-500/30 text-xs font-semibold text-sky-300 flex items-center gap-2">
+                        <i class="fa-solid fa-user-code text-sky-400"></i> Mohamed Osama
+                    </span>
+                    <span class="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-sky-500/30 text-xs font-semibold text-sky-300 flex items-center gap-2">
+                        <i class="fa-solid fa-user-check text-sky-400"></i> Amr Mohamed
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="1" data-theme="theme-1">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/20">
+                        <i class="fa-solid fa-bullseye mr-1.5"></i> Slide 02 / 22 • Objectives
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-emerald-400 mb-3">Project Vision & Core Objectives</h2>
+                <h3 class="text-slate-400 text-base mb-6">Why engineer a custom commerce backend?</h3>
+                
+                <ul class="space-y-4 text-slate-200 text-sm md:text-base">
+                    <li class="flex items-start gap-3 bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <i class="fa-solid fa-circle-check text-emerald-400 mt-1"></i>
+                        <div>
+                            <strong class="text-emerald-300">Precise Domain Representation:</strong> Expressing store rules, stock validation, and customer carts naturally through strong typing and OOP abstractions.
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3 bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <i class="fa-solid fa-circle-check text-emerald-400 mt-1"></i>
+                        <div>
+                            <strong class="text-emerald-300">Decoupled Clean Architecture:</strong> Keeping logic layers independent so models, persistence, and GUI can evolve without breaking adjacent systems.
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3 bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <i class="fa-solid fa-circle-check text-emerald-400 mt-1"></i>
+                        <div>
+                            <strong class="text-emerald-300">Zero-Dependency Storage:</strong> Custom serialization mechanisms guaranteeing reliable state persistence to local JSON data files.
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SLIDE 3 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="2" data-theme="theme-2">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-purple-500 to-pink-600 text-white">
+                        <i class="fa-solid fa-shapes mr-1.5"></i> Slide 03 / 22 • OOP Pillars
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-purple-400 mb-3">Applying Core OOP Principles</h2>
+                <h3 class="text-slate-400 text-base mb-6">Architectural pillars guiding code quality</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-slate-900/70 p-6 rounded-2xl border border-purple-500/20">
+                        <div class="text-purple-400 text-2xl mb-3"><i class="fa-solid fa-lock"></i></div>
+                        <h4 class="font-bold text-base text-purple-300 mb-2">Encapsulation</h4>
+                        <p class="text-xs text-slate-300 leading-relaxed">Internal attributes are shielded via double-underscore private naming (`__attributes`) paired with Python properties (`@property`) and validation setters.</p>
+                    </div>
+                    <div class="bg-slate-900/70 p-6 rounded-2xl border border-purple-500/20">
+                        <div class="text-purple-400 text-2xl mb-3"><i class="fa-solid fa-diagram-project"></i></div>
+                        <h4 class="font-bold text-base text-purple-300 mb-2">Abstraction</h4>
+                        <p class="text-xs text-slate-300 leading-relaxed">Abstract Base Classes (e.g., `Payment`) define rigid execution contracts for all payment implementations without exposing internal mechanics.</p>
+                    </div>
+                    <div class="bg-slate-900/70 p-6 rounded-2xl border border-purple-500/20">
+                        <div class="text-purple-400 text-2xl mb-3"><i class="fa-solid fa-sitemap"></i></div>
+                        <h4 class="font-bold text-base text-purple-300 mb-2">Composition</h4>
+                        <p class="text-xs text-slate-300 leading-relaxed">Complex domain entities build upon simpler ones—Customers encapsulate individual Carts, and Orders maintain lists of OrderItems.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="3" data-theme="theme-3">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-blue-500 to-cyan-600 text-white">
+                        <i class="fa-solid fa-folder-tree mr-1.5"></i> Slide 04 / 22 • Directory Tree
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-cyan-400 mb-3">Project Directory Structure</h2>
+                <h3 class="text-slate-400 text-base mb-4">Clean module layout for ease of maintenance</h3>
+                
+                <pre class="font-mono-code bg-slate-950 p-6 rounded-2xl border border-slate-800 text-xs md:text-sm text-cyan-300 leading-relaxed overflow-x-auto shadow-inner">
+ecommerce_project/
+├── models/
+│   ├── product.py         # Product entity & stock bounds
+│   ├── customer.py        # Customer profile & cart association
+│   ├── order.py           # Snapshot-based transactional orders
+│   ├── category.py        # Item grouping & categorization
+│   ├── cart.py            # Temporary shopping cart state
+│   └── payment.py         # Polymorphic Payment hierarchy
+├── file_manager/
+│   └── file_manager.py    # Local JSON file reader/writer
+├── tests/
+│   └── micro_tests.py     # Component regression tests
+└── store.py               # Facade Controller & API surface</pre>
+            </div>
+        </div>
+
+        <!-- SLIDE 5 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="4" data-theme="theme-4">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-amber-500 to-orange-600 text-white">
+                        <i class="fa-solid fa-diagram-next mr-1.5"></i> Slide 05 / 22 • Module Flow
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-amber-400 mb-3">Module Inter-Dependencies & Flow</h2>
+                <h3 class="text-slate-400 text-base mb-6">Unidirectional flow preventing circular imports</h3>
+                
+                <div class="space-y-4">
+                    <div class="p-4 bg-slate-900/60 rounded-xl border border-amber-500/20 flex items-center gap-4">
+                        <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm">1</span>
+                        <div>
+                            <h4 class="font-semibold text-amber-300 text-sm">Independent Domain Models</h4>
+                            <p class="text-xs text-slate-300">Entities in `models/` maintain zero dependencies on controller logic or GUI elements.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-900/60 rounded-xl border border-amber-500/20 flex items-center gap-4">
+                        <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm">2</span>
+                        <div>
+                            <h4 class="font-semibold text-amber-300 text-sm">Central Coordination Layer</h4>
+                            <p class="text-xs text-slate-300">`Store` imports models to orchestrate transactions, cart additions, and stock management.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-900/60 rounded-xl border border-amber-500/20 flex items-center gap-4">
+                        <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm">3</span>
+                        <div>
+                            <h4 class="font-semibold text-amber-300 text-sm">Persistence Bridge</h4>
+                            <p class="text-xs text-slate-300">`FileManager` converts runtime model objects to plain dictionaries before writing to disk.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="5" data-theme="theme-0">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-sky-500 to-blue-600 text-white">
+                        <i class="fa-solid fa-network-wired mr-1.5"></i> Slide 06 / 22 • System Design
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-sky-400 mb-3">System Design Overview (UML Diagram)</h2>
+                <h3 class="text-slate-400 text-base mb-4">Structural relationships across core classes</h3>
+                
+                <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-xs text-slate-300 space-y-3 font-mono-code">
+                    <div class="p-3 bg-slate-900 rounded-lg border border-sky-500/30 text-sky-300 font-bold">
+                        [Store Controller] ── (1:N) ──> [Product], [Customer], [Category], [Order]
+                    </div>
+                    <div class="pl-6 border-l-2 border-sky-500/30 space-y-2">
+                        <p>├── <span class="text-emerald-400">Customer</span> ── (1:1 Composition) ──> <span class="text-amber-400">Cart</span></p>
+                        <p>├── <span class="text-amber-400">Cart</span> ── (1:N) ──> <span class="text-amber-300">CartItem</span> ── (Ref) ──> <span class="text-purple-400">Product</span></p>
+                        <p>├── <span class="text-sky-400">Order</span> ── (1:N) ──> <span class="text-sky-300">OrderItem</span> (Snapshot Copy)</p>
+                        <p>└── <span class="text-sky-400">Order</span> ── (1:1) ──> <span class="text-pink-400">Payment</span> (Abstract Interface)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="6" data-theme="theme-1">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-emerald-500 to-teal-600 text-white">
+                        <i class="fa-solid fa-tags mr-1.5"></i> Slide 07 / 22 • Category Model
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-emerald-400 mb-3">The `Category` Model</h2>
+                <h3 class="text-slate-400 text-base mb-4">Organizing inventory into dynamic groups</h3>
+                
+                <div class="space-y-4">
+                    <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wide">Primary Attributes</span>
+                        <p class="text-sm text-slate-200 mt-1 font-mono-code">_category_id: str, _name: str</p>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wide">Key Methods</span>
+                        <p class="text-sm text-slate-200 mt-1 font-mono-code">count_products(products: list[Product]) -> int</p>
+                        <p class="text-xs text-slate-400 mt-1">Calculates total active stock items associated with this specific category instance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="7" data-theme="theme-2">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-purple-500 to-pink-600 text-white">
+                        <i class="fa-solid fa-box-open mr-1.5"></i> Slide 08 / 22 • Product Model
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-purple-400 mb-3">The `Product` Model</h2>
+                <h3 class="text-slate-400 text-base mb-4">Central inventory unit & stock guardrails</h3>
+                
+                <pre class="font-mono-code bg-slate-950 p-5 rounded-2xl border border-purple-500/20 text-xs text-purple-300 leading-relaxed overflow-x-auto mb-4">
+class Product:
+    def __init__(self, product_id: str, name: str, price: float, stock: int, category: Category):
+        self._product_id = product_id
+        self._name = name
+        self._price = price
+        self._stock = stock
+        self._category = category
+
+    def reduce_stock(self, quantity: int):
+        if quantity > self._stock:
+            raise ValueError("Insufficient stock available.")
+        self._stock -= quantity</pre>
+            </div>
+        </div>
+
+        <!-- SLIDE 9 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="8" data-theme="theme-3">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-blue-500 to-cyan-600 text-white">
+                        <i class="fa-solid fa-user-gear mr-1.5"></i> Slide 09 / 22 • Customer Model
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-cyan-400 mb-3">The `Customer` Model</h2>
+                <h3 class="text-slate-400 text-base mb-4">User profile & encapsulated cart ownership</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="p-5 bg-slate-900/60 rounded-xl border border-slate-800">
+                        <h4 class="font-bold text-cyan-300 text-sm mb-2">Customer Attributes</h4>
+                        <ul class="space-y-2 text-slate-300 font-mono-code">
+                            <li>• _customer_id: str</li>
+                            <li>• _name: str</li>
+                            <li>• _email: str</li>
+                            <li>• _phone: str</li>
+                            <li>• _cart: Cart (1:1 Ownership)</li>
+                        </ul>
+                    </div>
+                    <div class="p-5 bg-slate-900/60 rounded-xl border border-slate-800">
+                        <h4 class="font-bold text-cyan-300 text-sm mb-2">Domain Responsibilities</h4>
+                        <p class="text-slate-300 leading-relaxed">Guarantees each customer maintains an active `Cart` instance upon initialization, allowing seamless item aggregation during interactive shopping sessions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="9" data-theme="theme-4">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-amber-500 to-orange-600 text-white">
+                        <i class="fa-solid fa-cart-shopping mr-1.5"></i> Slide 10 / 22 • Cart Models
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-amber-400 mb-3">The `Cart` & `CartItem` Models</h2>
+                <h3 class="text-slate-400 text-base mb-4">Transient shopping state & real-time math</h3>
+                
+                <div class="space-y-3 text-xs md:text-sm">
+                    <div class="p-4 bg-slate-900/70 rounded-xl border border-amber-500/20">
+                        <span class="font-bold text-amber-300">CartItem Subtotal Calculation</span>
+                        <p class="font-mono-code text-amber-200 mt-1">subtotal() -> float = product.price * quantity</p>
+                    </div>
+                    <div class="p-4 bg-slate-900/70 rounded-xl border border-amber-500/20">
+                        <span class="font-bold text-amber-300">Cart Total Evaluation</span>
+                        <p class="font-mono-code text-amber-200 mt-1">total() -> float = sum(item.subtotal() for item in self._items)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 11 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="10" data-theme="theme-0">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-sky-500 to-blue-600 text-white">
+                        <i class="fa-solid fa-receipt mr-1.5"></i> Slide 11 / 22 • Order Models
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-sky-400 mb-3">The `Order` & `OrderItem` Models</h2>
+                <h3 class="text-slate-400 text-base mb-4">Immutable transaction record via Snapshot Copying</h3>
+                
+                <div class="bg-slate-900/80 p-5 rounded-xl border border-sky-500/30 text-xs md:text-sm text-slate-200 space-y-3">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-camera text-sky-400 mt-1"></i>
+                        <div>
+                            <strong class="text-sky-300">Price Snapshot Principle:</strong>
+                            <p class="text-slate-400 mt-0.5">Unit prices are frozen inside `OrderItem` during `Order.from_cart()`. Future edits to product prices never mutate historic order totals.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 12 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="11" data-theme="theme-1">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-emerald-500 to-teal-600 text-white">
+                        <i class="fa-solid fa-credit-card mr-1.5"></i> Slide 12 / 22 • Payments
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-emerald-400 mb-3">Payment Inheritance Hierarchy</h2>
+                <h3 class="text-slate-400 text-base mb-4">Polymorphic payment execution patterns</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="p-5 bg-slate-900/60 rounded-xl border border-emerald-500/20">
+                        <h4 class="font-bold text-emerald-300 text-sm mb-1"><i class="fa-solid fa-money-bill mr-2"></i>CashPayment</h4>
+                        <p class="text-slate-300 mt-2">Validates cash tendered against order total and calculates exact change return.</p>
+                    </div>
+                    <div class="p-5 bg-slate-900/60 rounded-xl border border-emerald-500/20">
+                        <h4 class="font-bold text-emerald-300 text-sm mb-1"><i class="fa-solid fa-credit-card mr-2"></i>CardPayment</h4>
+                        <p class="text-slate-300 mt-2">Masks card numbers (`**** **** **** 1234`) and handles payment verification logic.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 13 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="12" data-theme="theme-2">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-purple-500 to-pink-600 text-white">
+                        <i class="fa-solid fa-hard-drive mr-1.5"></i> Slide 13 / 22 • File Storage
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-purple-400 mb-3">The `FileManager` Architecture</h2>
+                <h3 class="text-slate-400 text-base mb-4">Local disk persistence engine</h3>
+                
+                <div class="bg-slate-900/80 p-5 rounded-2xl border border-purple-500/20 text-xs md:text-sm text-slate-200">
+                    <p class="font-mono-code text-purple-300">FileManager(data_dir="data/")</p>
+                    <p class="text-slate-400 mt-2">Utilizes `os.makedirs(data_dir, exist_ok=True)` during initialization to eliminate missing directory runtime exceptions on fresh deployments.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 14 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="13" data-theme="theme-3">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-blue-500 to-cyan-600 text-white">
+                        <i class="fa-solid fa-file-code mr-1.5"></i> Slide 14 / 22 • Serialization
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-cyan-400 mb-3">Serialization & File Operations</h2>
+                <h3 class="text-slate-400 text-base mb-4">Safely reading and writing state</h3>
+                
+                <pre class="font-mono-code bg-slate-950 p-5 rounded-2xl border border-slate-800 text-xs text-cyan-300 leading-relaxed overflow-x-auto">
+def save(self, filename: str, data: list[dict]):
+    filepath = os.path.join(self._data_dir, f"{filename}.json")
+    with open(filepath, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4)
+
+def load(self, filename: str) -> list[dict]:
+    # Handles FileNotFoundError safely by returning []</pre>
+            </div>
+        </div>
+
+        <!-- SLIDE 15 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="14" data-theme="theme-4">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-amber-500 to-orange-600 text-white">
+                        <i class="fa-solid fa-sliders mr-1.5"></i> Slide 15 / 22 • Facade Controller
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-amber-400 mb-3">The `Store` Class Core Controller</h2>
+                <h3 class="text-slate-400 text-base mb-4">Implementing the Facade Design Pattern</h3>
+                
+                <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                    The `Store` class serves as a unified interface concealing underlying model complexity. UI elements communicate strictly with `Store` to execute inventory changes, customer registrations, and checkouts.
+                </p>
+            </div>
+        </div>
+
+        <!-- SLIDE 16 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="15" data-theme="theme-0">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-sky-500 to-blue-600 text-white">
+                        <i class="fa-solid fa-plus-circle mr-1.5"></i> Slide 16 / 22 • Product Creation
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-sky-400 mb-3">Product CRUD: `add_product`</h2>
+                <h3 class="text-slate-400 text-base mb-4">Defensive inventory insertion</h3>
+                
+                <pre class="font-mono-code bg-slate-950 p-5 rounded-2xl border border-slate-800 text-xs text-sky-300 leading-relaxed overflow-x-auto">
+def add_product(self, product: Product):
+    if product.product_id in [p.product_id for p in self.__product]:
+        raise ValueError(f"Product ID '{product.product_id}' already exists.")
+    self.__product.append(product)
+    self.save_all()</pre>
+            </div>
+        </div>
+
+        <!-- SLIDE 17 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="16" data-theme="theme-1">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-emerald-500 to-teal-600 text-white">
+                        <i class="fa-solid fa-pen-to-square mr-1.5"></i> Slide 17 / 22 • Product Mutations
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-emerald-400 mb-3">Product CRUD: Update & Delete</h2>
+                <h3 class="text-slate-400 text-base mb-4">Safe inventory state modifications</h3>
+                
+                <div class="space-y-3 text-xs md:text-sm">
+                    <div class="p-4 bg-slate-900/60 rounded-xl border border-emerald-500/20">
+                        <span class="font-bold text-emerald-300">`update_product(product_id, updated_product)`</span>
+                        <p class="text-slate-300 mt-1">Locates target product by ID index, updates metadata, and syncs changes to disk.</p>
+                    </div>
+                    <div class="p-4 bg-slate-900/60 rounded-xl border border-emerald-500/20">
+                        <span class="font-bold text-emerald-300">`delete_product(product_id)`</span>
+                        <p class="text-slate-300 mt-1">Removes item safely or raises `ValueError` if ID does not exist.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 18 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="17" data-theme="theme-2">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-purple-500 to-pink-600 text-white">
+                        <i class="fa-solid fa-magnifying-glass mr-1.5"></i> Slide 18 / 22 • Product Query
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-purple-400 mb-3">Product CRUD: Search & Get</h2>
+                <h3 class="text-slate-400 text-base mb-4">Inventory querying mechanisms</h3>
+                
+                <pre class="font-mono-code bg-slate-950 p-5 rounded-2xl border border-purple-500/20 text-xs text-purple-300 leading-relaxed overflow-x-auto">
+def get_product(self, search_term: str) -> Product:
+    for product in self.__product:
+        if product.product_id == search_term or product.name.lower() == search_term.lower():
+            return product
+    raise ValueError(f"Product '{search_term}' not found.")</pre>
+            </div>
+        </div>
+
+        <!-- SLIDE 19 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="18" data-theme="theme-3">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-blue-500 to-cyan-600 text-white">
+                        <i class="fa-solid fa-list-check mr-1.5"></i> Slide 19 / 22 • Sequence Flow
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-cyan-400 mb-3">The Checkout Sequence Analysis</h2>
+                <h3 class="text-slate-400 text-base mb-4">Step-by-step transaction validation</h3>
+                
+                <ol class="space-y-3 text-xs md:text-sm text-slate-200">
+                    <li class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center gap-3">
+                        <span class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 font-bold flex items-center justify-center text-xs">1</span>
+                        Verify customer existence & non-empty shopping cart state.
+                    </li>
+                    <li class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center gap-3">
+                        <span class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 font-bold flex items-center justify-center text-xs">2</span>
+                        Iterate cart items to verify stock availability across all requested quantities.
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- SLIDE 20 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="19" data-theme="theme-4">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-amber-500 to-orange-600 text-white">
+                        <i class="fa-solid fa-bolt mr-1.5"></i> Slide 20 / 22 • Checkout Method
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-amber-400 mb-3">Executing the `checkout` Method</h2>
+                <h3 class="text-slate-400 text-base mb-4">Atomic execution & state commitment</h3>
+                
+                <pre class="font-mono-code bg-slate-950 p-5 rounded-2xl border border-slate-800 text-xs text-amber-300 leading-relaxed overflow-x-auto">
+def checkout(self, customer_id: str, payment_method: Payment) -> Order:
+    customer = self.get_customer(customer_id)
+    order = Order.from_cart(customer.cart)
+    
+    payment_method.process(order.total())
+    order.mark_paid()
+    
+    # Deduct stock & clear user cart
+    for item in customer.cart.items:
+        item.product.reduce_stock(item.quantity)
+    customer.cart.clear()
+    
+    self.save_all()
+    return order</pre>
+            </div>
+        </div>
+
+        <!-- SLIDE 21 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="20" data-theme="theme-0">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-sky-500 to-blue-600 text-white">
+                        <i class="fa-solid fa-window-restore mr-1.5"></i> Slide 21 / 22 • GUI App
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-sky-400 mb-3">Graphical User Interface (GUI) Integration</h2>
+                <h3 class="text-slate-400 text-base mb-4">Bringing the engine to life visually</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="p-5 bg-slate-900/60 rounded-xl border border-sky-500/20">
+                        <h4 class="font-bold text-sky-300 text-sm mb-2"><i class="fa-solid fa-display mr-2"></i>Interactive Views</h4>
+                        <p class="text-slate-300">Dedicated tabs for Product Catalog browsing, Cart management, and Order History inspection.</p>
+                    </div>
+                    <div class="p-5 bg-slate-900/60 rounded-xl border border-sky-500/20">
+                        <h4 class="font-bold text-sky-300 text-sm mb-2"><i class="fa-solid fa-sync mr-2"></i>Real-time Data Binding</h4>
+                        <p class="text-slate-300">Actions in the GUI trigger immediate `Store` updates, giving instant visual feedback.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 22 -->
+        <div class="slide-frame glass-card rounded-3xl p-8 md:p-12 w-full flex-col justify-between" data-slide="21" data-theme="theme-1">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-emerald-500 to-teal-600 text-white">
+                        <i class="fa-solid fa-flag-checkered mr-1.5"></i> Slide 22 / 22 • Conclusion
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold text-emerald-400 mb-3">Conclusion & Project Wrap-Up</h2>
+                <h3 class="text-slate-400 text-base mb-6">Summary of engineering milestones achieved</h3>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                    <div class="p-4 bg-slate-900/70 rounded-2xl border border-emerald-500/20 text-center">
+                        <div class="text-emerald-400 text-2xl mb-2"><i class="fa-solid fa-code font-bold"></i></div>
+                        <h4 class="text-xs font-bold text-slate-200 uppercase">Modular Core</h4>
+                        <p class="text-xs text-slate-400 mt-1">Clean OOP Separation</p>
+                    </div>
+                    <div class="p-4 bg-slate-900/70 rounded-2xl border border-emerald-500/20 text-center">
+                        <div class="text-emerald-400 text-2xl mb-2"><i class="fa-solid fa-floppy-disk"></i></div>
+                        <h4 class="text-xs font-bold text-slate-200 uppercase">Persistence</h4>
+                        <p class="text-xs text-slate-400 mt-1">Safe JSON Storage</p>
+                    </div>
+                    <div class="p-4 bg-slate-900/70 rounded-2xl border border-emerald-500/20 text-center">
+                        <div class="text-emerald-400 text-2xl mb-2"><i class="fa-solid fa-check-double"></i></div>
+                        <h4 class="text-xs font-bold text-slate-200 uppercase">Interactive GUI</h4>
+                        <p class="text-xs text-slate-400 mt-1">Tested & Functional</p>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-slate-900/90 rounded-2xl border border-emerald-500/30 text-center">
+                    <p class="text-base text-emerald-300 font-semibold mb-2">Thank you for reviewing our architecture!</p>
+                    <p class="text-xs text-slate-400">Project Engineers: <span class="text-slate-200">Osama Hatem, Mohamed Osama, Amr Mohamed</span></p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <footer class="w-full max-w-6xl glass-card rounded-2xl py-3 px-6 mt-4 flex items-center justify-between no-print">
+        <div class="flex items-center gap-2">
+            <button onclick="prevSlide()" class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs shadow-md shadow-sky-600/30 transition flex items-center gap-2">
+                <i class="fa-solid fa-chevron-left"></i> Previous
+            </button>
+            <button onclick="nextSlide()" class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs shadow-md shadow-sky-600/30 transition flex items-center gap-2">
+                Next <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Slide Counter Indicator -->
+        <div class="text-xs font-semibold text-slate-300 bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800">
+            Slide <span id="current-slide-num" class="text-sky-400 font-bold">1</span> of <span class="text-slate-400">22</span>
+        </div>
+
+        <!-- Quick Jump Selector -->
+        <div class="hidden sm:flex items-center gap-2">
+            <label for="slide-select" class="text-xs text-slate-400">Jump to:</label>
+            <select id="slide-select" onchange="goToSlide(parseInt(this.value))" class="bg-slate-900 border border-slate-700/80 text-xs text-sky-300 rounded-xl px-3 py-1.5 outline-none focus:border-sky-500 cursor-pointer">
+                <!-- Dynamically Populated by JS -->
+            </select>
+        </div>
+    </footer>
+
+    <!-- Slide Grid Modal Overview -->
+    <div id="grid-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 hidden flex-col justify-between p-6 md:p-10">
+        <div class="flex items-center justify-between mb-6 max-w-6xl mx-auto w-full">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-border-all text-sky-400 text-xl"></i>
+                <h3 class="text-lg font-bold text-slate-100">Presentation Slide Overview</h3>
+            </div>
+            <button onclick="toggleGridModal()" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div id="grid-thumbnails" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-6xl mx-auto w-full overflow-y-auto max-h-[75vh] p-2">
+            <!-- Dynamically populated thumbnail cards -->
+        </div>
+
+        <div class="text-center text-xs text-slate-400 mt-4">
+            Click any slide to jump directly to it
+        </div>
+    </div>
+
+    <!-- Interactive Navigation Logic -->
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide-frame');
+        const currentSlideNum = document.getElementById('current-slide-num');
+        const slideSelect = document.getElementById('slide-select');
+        const bodyTag = document.body;
+        const gridModal = document.getElementById('grid-modal');
+        const gridThumbnails = document.getElementById('grid-thumbnails');
+
+        // Populate Quick Jump Dropdown and Grid Overview
+        slides.forEach((slide, idx) => {
+            const slideTitle = slide.querySelector('h2').innerText;
+            
+            // Populate select option
+            const option = document.createElement('option');
+            option.value = idx;
+            option.innerText = `${idx + 1}. ${slideTitle.substring(0, 24)}...`;
+            slideSelect.appendChild(option);
+
+            // Populate thumbnail card for modal grid
+            const card = document.createElement('div');
+            card.className = 'bg-slate-900 border border-slate-800 hover:border-sky-500 p-4 rounded-2xl cursor-pointer transition transform hover:-translate-y-1 flex flex-col justify-between';
+            card.onclick = () => {
+                goToSlide(idx);
+                toggleGridModal();
+            };
+            card.innerHTML = `
+                <div>
+                    <span class="text-[10px] font-bold text-sky-400 block mb-1">Slide ${idx + 1}</span>
+                    <h4 class="text-xs font-semibold text-slate-200 line-clamp-2">${slideTitle}</h4>
+                </div>
+            `;
+            gridThumbnails.appendChild(card);
+        });
+
+        function updateSlideView() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+            
+            const activeSlideElement = slides[currentSlide];
+            const themeClass = activeSlideElement.getAttribute('data-theme');
+            bodyTag.className = `${themeClass} text-slate-100 min-h-screen flex flex-col justify-between items-center p-4 md:p-6 select-none`;
+
+            currentSlideNum.innerText = currentSlide + 1;
+            slideSelect.value = currentSlide;
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            updateSlideView();
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            updateSlideView();
+        }
+
+        function goToSlide(index) {
+            if (index >= 0 && index < slides.length) {
+                currentSlide = index;
+                updateSlideView();
+            }
+        }
+
+        function toggleGridModal() {
+            gridModal.classList.toggle('hidden');
+            gridModal.classList.toggle('flex');
+        }
+
+        // Keyboard Arrow Navigation
+        document.addEventListener('keydown', (e) => {
+            if (gridModal.classList.contains('flex')) {
+                if (e.key === 'Escape') toggleGridModal();
+                return;
+            }
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>
