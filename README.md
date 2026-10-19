@@ -4,6 +4,24 @@
 **Author:** NeGaT1Vee  
 **Language:** Python 3.8+  
 **Status:** Active Development  
+----
+<div align="center">
+
+*A robust, object-oriented e-commerce backend built entirely from scratch in Python with local JSON persistence, micro-testing, and an interactive GUI.*
+
+[![Live Presentation](https://img.shields.io/badge/🎬_View-Live_Presentation-2563eb?style=for-the-badge&logo=html5&logoColor=white)](https://negat1vee.github.io/pyhon-project/)
+[![Python OOP](https://img.shields.io/badge/Python-OOP-38bdf8?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+
+</div>
+
+---
+
+## 📋 Project Overview
+This repository contains a modular e-commerce backend engine engineered by **Osama Hatem, Mohamed Osama, and Amr Mohamed**. It implements strict architectural patterns (Facade, Repository, and Polymorphic Payments) without relying on external databases.
+
+### ⚡ Interactive Presentation
+Want a deep-dive walkthrough of the architecture, UML diagrams, and code snippets? 
+👉 **[Click Here to Launch the Cinematic Web Presentation](https://negat1vee.github.io/pyhon-project/)**
 
 ---
 
