@@ -1,140 +1,150 @@
 # Small E-Commerce System
-
+ 
 **Version:** 1.0.0  
-**Author:** NeGaT1Vee  
-**Language:** Python 3.8+  
-**Status:** Active Development  
-
+**Authors:** Amr Mohamed Ahmed, Mohamed Osama, Osama Hatem  
+**Language:** Python 3.10+  
+**Status:** Active Development
+ 
 ---
-
+ 
+## Team
+ 
+| Name |
+|------|
+| Amr Mohamed Ahmed |
+| Mohamed Osama |
+| Osama Hatem |
+ 
+---
+ 
 ## 1. Overview
-
-A fully-functional object-oriented e-commerce system built in Python with a graphical user interface (GUI). The system demonstrates core OOP principles including inheritance, polymorphism, composition, and encapsulation through a complete domain-driven architecture.
-
+ 
+An object-oriented e-commerce system built in Python with a graphical user interface (tkinter). The project demonstrates core OOP principles: inheritance, polymorphism, composition and encapsulation, organised as a layered architecture.
+ 
 ### 1.1 Project Scope
-
-The Small E-Commerce System is a complete implementation of an online store with:
-- Multi-category product catalog management
-- Customer cart and order processing
-- Multiple payment methods (Cash, Card, Wallet)
-- Dynamic discount system (percentage and fixed-amount)
-- Persistent file-based data storage
-- Full audit trail for order history
-- Interactive Qt-based graphical interface
-
+ 
+The Small E-Commerce System is an implementation of an online store with:
+ 
+- Category and product catalog management
+- Customer carts and order processing
+- Multiple payment methods (Cash and Card)
+- Percentage discounts applied at checkout
+- Persistent file-based data storage (JSON) and CSV import
+- Order status tracking (Pending, Paid, Cancelled)
+- An interactive tkinter interface for all operations
 ### 1.2 Key Features
-
+ 
 | Feature | Description |
 |---------|-------------|
-| **Customer Management** | Register, login, profile management with order history |
-| **Product Catalog** | Browse by category, search, stock tracking |
-| **Shopping Cart** | Add/remove items, dynamic total calculation |
-| **Checkout System** | Multi-step validation, inventory deduction, order confirmation |
-| **Payment Processing** | Abstract payment types with Cash/Card/Wallet implementations |
-| **Discount Engine** | Polymorphic discount types: percentage and fixed-amount |
-| **Order Management** | Status tracking (Pending → Paid → Completed or Cancelled) |
-| **Data Persistence** | JSON-based file storage with transaction safety |
-| **GUI Interface** | User-friendly PyQt5 application for all operations |
-
+| **Customer Management** | Add customers with validated name, email and phone; each customer has a cart and an order history |
+| **Product Catalog** | Add, search and remove products; stock tracking; products belong to a category |
+| **Shopping Cart** | Add and remove items; adding the same product again merges the quantity; live total |
+| **Checkout System** | Empty-cart check, stock check, payment, stock deduction, order record |
+| **Payment Processing** | Abstract `Payment` with `CashPayment` and `CardPayment` implementations |
+| **Discounts** | A discount rate between 0 and 1 applied to an order before payment |
+| **Order Management** | View orders; cancelling a paid order restores stock |
+| **Data Persistence** | JSON save/load through `FileManager`, plus CSV import for categories, products and customers |
+| **Dashboard** | Customers, products, orders today and total sales |
+| **GUI Interface** | Tabbed tkinter application for all of the above |
+ 
 ---
-
+ 
 ## 2. Architecture
-
+ 
 ### 2.1 Layered Architecture
-
+ 
 ```
 ┌─────────────────────────────────────────────┐
 │         GUI (Presentation Layer)            │
 │              (gui/)                         │
 ├─────────────────────────────────────────────┤
 │      Application/Service Layer              │
-│          (store/Store Facade)               │
+│          (store/ Store facade)              │
 ├─────────────────────────────────────────────┤
 │         Domain Model Layer                  │
 │         (models/) - Business Logic          │
 ├─────────────────────────────────────────────┤
 │      Persistence Layer                      │
-│      (file_manager/FileManager)             │
+│      (file_manager/ FileManager)            │
 └─────────────────────────────────────────────┘
 ```
-
-**Dependency Flow:** GUI → Application → Domain → Persistence (One-way, no circular dependencies)
-
+ 
+The GUI talks to `Store`, `Store` works with the domain models, and `FileManager` reads and writes the data files.
+ 
 ### 2.2 Core Domain Model (14 Classes)
-
-#### **Entity Classes**
-
+ 
+#### Entity Classes
+ 
 | Class | Responsibility |
 |-------|-----------------|
-| `Customer` | User account, personal data, reference to cart and order history |
-| `Product` | Catalog item with name, price, stock, category |
-| `Category` | Product grouping and organization |
-| `Cart` | Shopping cart container, tracks selected items |
-| `CartItem` | Individual item in cart with quantity snapshot |
-| `Order` | Finalized purchase record with immutable details |
-| `OrderItem` | Line item in order with price snapshot (prevents history corruption) |
-
-#### **Value Objects & Enumerations**
-
+| `Customer` | Account details, owns a cart, keeps a list of its orders |
+| `Product` | Catalog item with name, price, stock and category |
+| `Category` | Product grouping |
+| `Cart` | Shopping cart container |
+| `CartItem` | One product and a quantity in a cart |
+| `Order` | Purchase record with status, discount, items and payment |
+| `OrderItem` | Order line with a **price snapshot** (`unit_price`), so later price changes don't alter old orders |
+ 
+#### Value Objects, Enumerations and Errors
+ 
 | Class | Responsibility |
 |-------|-----------------|
 | `OrderStatus` | Enum: PENDING, PAID, CANCELLED |
-| `Discount` (Abstract) | Base for discount strategies |
-| `PercentageDiscount` | Apply percentage-based reductions |
-| `FixedDiscount` | Apply fixed-amount reductions |
-| `Payment` (Abstract) | Base for payment strategies |
-| `CashPayment` | In-person cash payment |
-| `CardPayment` | Credit/debit card payment |
-| `WalletPayment` | Digital wallet/account balance payment |
-
-#### **Service & Utility Classes**
-
+| `Payment` (abstract) | Base class for payment types |
+| `CashPayment` | Cash payment with tendered amount and change |
+| `CardPayment` | Card payment storing only the last 4 digits |
+| `ValidationError` | Custom exception raised when data or a business rule is invalid |
+ 
+#### Service and Utility Classes
+ 
 | Class | Responsibility |
 |-------|-----------------|
-| `Store` | Application facade; orchestrates all business operations |
-| `FileManager` | Persistence abstraction; JSON serialization/deserialization |
-
+| `Store` | Application facade; coordinates customers, products, carts, checkout and statistics |
+| `FileManager` | Saves and loads JSON files and imports CSV files |
+ 
 ### 2.3 Design Patterns
-
-**Applied Patterns:**
-- **Facade Pattern:** `Store` class simplifies complex subsystem interactions
-- **Strategy Pattern:** `Discount` and `Payment` hierarchies allow runtime behavior selection
-- **Repository Pattern:** `FileManager` abstracts data storage implementation
-- **Value Object Pattern:** `CartItem`, `OrderItem` encapsulate immutable snapshots
-- **Builder-like Construction:** Order creation via checkout flow
-
+ 
+- **Facade:** `Store` hides the details of checkout, cart handling and lookups from the GUI.
+- **Polymorphism / Strategy:** `CashPayment` and `CardPayment` implement the abstract `Payment.process()`, so an order accepts any payment type.
+- **Repository-style persistence:** `FileManager` keeps file handling out of the domain classes.
+- **Snapshot:** `OrderItem` copies the price at purchase time.
+- **Factory method:** `Order.from_cart()` builds an order from a cart.
 ### 2.4 UML Diagrams
-
-#### **2.4.1 Class Diagram**
-
+ 
+#### 2.4.1 Class Diagram
+ 
 ```mermaid
 classDiagram
     direction TB
-
+ 
     class Store {
         -_customers: list~Customer~
         -_products: list~Product~
         -_categories: list~Category~
         -_orders: list~Order~
-        -_file_manager: FileManager
-        +add_product(product: Product) None
-        +update_product(product: Product) None
-        +delete_product(product_id: str) None
-        +search_products(keyword: str) list~Product~
+        +add_category(category: Category) None
         +add_customer(customer: Customer) None
-        +update_customer(customer: Customer) None
-        +delete_customer(customer_id: str) None
+        +add_product(product: Product) None
+        +remove_product(pid: str) None
+        +search_products(keyword: str) list~Product~
         +add_to_cart(cid: str, pid: str, qty: int) None
-        +remove_from_cart(cid: str, pid: str) None
-        +checkout(cid: str, method: str) Order
-        +cancel_order(order_id: str) None
-        +dashboard_stats() dict~str, float~
-        +save_all() None
+        +checkout(cid: str, method: str, card_last4, tendered, discount_rate) Order
+        +dashboard_status() dict
     }
     class FileManager {
-        -_data_dir: str
-        +load(name: str) list~dict~
-        +save(name: str, data: list~dict~) None
+        -folder: str
+        +save_store(store: Store) None
+        +load_store() Store
+        +save_categories(categories) None
+        +load_categories() list~Category~
+        +save_products(products) None
+        +load_products(categories) list~Product~
+        +save_customers(customers) None
+        +load_customers() list~Customer~
+        +save_orders(orders) None
+        +import_categories(store, filepath) tuple
+        +import_products(store, filepath) tuple
+        +import_customers(store, filepath) tuple
     }
     class Category {
         -_category_id: str
@@ -147,9 +157,11 @@ classDiagram
         -_price: float
         -_stock: int
         -_category: Category
-        +is_in_stock(qty: int) bool
-        +reduce_stock(qty: int) None
-        +increase_stock(qty: int) None
+        +is_in_stock(value: int) bool
+        +reduce_stock(value: int) int
+        +increase_stock(value: int) int
+        +to_dict() dict
+        +from_dict(data: dict, categories: dict) Product
     }
     class Customer {
         -_customer_id: str
@@ -157,13 +169,14 @@ classDiagram
         -_email: str
         -_phone: str
         -_cart: Cart
-        +order_history(orders: list~Order~) list~Order~
-        +__str__() str
+        -_orders: list~Order~
+        +add_order(order: Order) None
+        +order_history() list~Order~
     }
     class Cart {
         -_items: list~CartItem~
-        +add_item(product: Product, qty: int) None
-        +remove_item(pid: str) None
+        +add_item(product: Product, quantity: int) None
+        +remove_item(item: CartItem) None
         +total() float
         +is_empty() bool
         +clear() None
@@ -180,7 +193,7 @@ classDiagram
         -_status: OrderStatus
         -_discount_rate: float
         -_items: list~OrderItem~
-        -_payment: Optional~Payment~
+        -_payment: Payment
         +from_cart(order_id: str, customer_id: str, cart: Cart) Order
         +total() float
         +apply_discount(rate: float) None
@@ -217,10 +230,10 @@ classDiagram
         +process() bool
         +mask_card() str
     }
-
+ 
     CashPayment --|> Payment
     CardPayment --|> Payment
-
+ 
     Store "1" *-- "0..*" Customer : manages
     Store "1" *-- "0..*" Product : stocks
     Store "1" *-- "0..*" Category : defines
@@ -232,102 +245,77 @@ classDiagram
     CartItem "0..*" --> "1" Product : refers to
     OrderItem "0..*" --> "1" Product : snapshot of
     Product "0..*" --> "1" Category : belongs to
-    Order "0..*" --> "1" Customer : placed by
     Order --> OrderStatus : status
-    Store ..> FileManager : uses
+    FileManager ..> Store : saves and loads
 ```
-
-**Key Relationships:**
-- **Composition:** `Store` owns collections of `Customer`, `Product`, `Category`, `Order`
-- **Aggregation:** `Customer` owns `Cart`; `Cart` contains `CartItem`s; `Order` contains `OrderItem`s
-- **Association:** `CartItem` and `OrderItem` reference `Product` (snapshots capture unit prices)
-- **Inheritance:** `CashPayment` and `CardPayment` extend abstract `Payment`
-- **Dependency:** `Store` depends on `FileManager` for persistence
-
----
-
-#### **2.4.2 Checkout Sequence Diagram**
-
+ 
+**Key relationships**
+ 
+- **Composition:** `Store` owns its customers, products, categories and orders; `Customer` owns a `Cart`; `Cart` contains `CartItem`s; `Order` contains `OrderItem`s.
+- **Association:** `CartItem` and `OrderItem` refer to a `Product`; `OrderItem` also stores the unit price at purchase time.
+- **Inheritance:** `CashPayment` and `CardPayment` extend the abstract `Payment`.
+- **Dependency:** `FileManager` reads and writes the data held by `Store`.
+#### 2.4.2 Checkout Sequence Diagram
+ 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Customer
+    actor User
     participant GUI
     participant Store
     participant Cart
-    participant Product
     participant Order
     participant Pay as Payment (Cash or Card)
-    participant FM as FileManager
-
-    Customer->>GUI: Press Checkout, choose Cash or Card
-    GUI->>Store: checkout(cid, method)
+    participant Product
+ 
+    User->>GUI: Press Checkout (method, discount)
+    GUI->>Store: checkout(cid, method, ..., discount_rate)
     Store->>Store: find customer by cid
     Store->>Cart: is_empty()
-
+ 
     alt Cart is empty
-        Cart-->>Store: True
-        Store-->>GUI: raise BusinessRuleError("Cart is empty")
-        GUI-->>Customer: Show message
+        Store-->>GUI: raise ValidationError("cart cannot be empty")
+        GUI-->>User: Show message
     else Cart has items
-        Cart-->>Store: False
-        loop each CartItem
-            Store->>Product: is_in_stock(qty)
-            Product-->>Store: True / False
+        Store->>Order: from_cart(order_id, cid, cart)
+        Note over Order: unit_price copied into each OrderItem, status PENDING
+        Store->>Order: apply_discount(rate)
+        Store->>Pay: create CashPayment or CardPayment (amount = order.total())
+        Store->>Order: mark_paid(payment)
+        Order->>Order: check status is PENDING and amount covers total
+        loop each OrderItem
+            Order->>Product: is_in_stock(qty)
         end
-        alt Any item out of stock
-            Store-->>GUI: raise BusinessRuleError("Only N units available")
-            GUI-->>Customer: Show message, nothing changed
-        else All in stock
-            Store->>Order: from_cart(order_id, cid, cart)
-            Note over Order: copies unit_price into each OrderItem, status PENDING
-            Order-->>Store: order
-            Store->>Pay: create CashPayment or CardPayment (amount = order.total())
-            Store->>Pay: process()
-            alt Payment fails
-                Pay-->>Store: False
-                Store-->>GUI: raise BusinessRuleError("Payment failed")
-                GUI-->>Customer: Show message, nothing changed
-            else Payment succeeds
-                Pay-->>Store: True
-                Store->>Order: mark_paid(payment)
-                loop each OrderItem
-                    Store->>Product: reduce_stock(qty)
-                end
-                Store->>Cart: clear()
-                Store->>FM: save("orders", ...), save("products", ...)
-                alt Save fails
-                    FM-->>Store: raise PersistenceError
-                    Store->>Product: increase_stock(qty) for each item
-                    Note over Store: also removes the order and restores the cart
-                    Store-->>GUI: raise PersistenceError
-                else Saved
-                    Store-->>GUI: order
-                    GUI-->>Customer: Order confirmation
-                end
+        alt Not enough stock, or payment fails
+            Order-->>Store: raise ValidationError
+            Store-->>GUI: error
+            GUI-->>User: Show message, nothing changed
+        else All checks pass
+            Order->>Pay: process()
+            loop each OrderItem
+                Order->>Product: reduce_stock(qty)
             end
+            Note over Order: status becomes PAID
+            Store->>Store: add order to customer history and order list
+            Store->>Cart: clear()
+            Store-->>GUI: order
+            GUI-->>User: Order confirmation
         end
     end
 ```
-
-**Sequence Flow Explanation:**
-
+ 
+**Flow summary**
+ 
 | Step | Action | Validation |
 |------|--------|-----------|
-| 1-3 | Customer initiates checkout | Store locates customer and checks cart |
-| 4-8 | **BR-02 Check:** Empty cart validation | If empty → terminate with error |
-| 9-12 | **BR-01 Check:** Stock availability for all items | If insufficient → terminate, no state change |
-| 13-16 | Order created from cart snapshot | Unit prices frozen in OrderItem records |
-| 17-22 | Payment processing via abstract Payment interface | If fails → terminate, no state change |
-| 23-28 | **All-or-nothing commit:** Stock reduced, cart cleared, data persisted | If save fails → rollback stock, remove order, restore cart |
-| 29-30 | Customer receives confirmation | Order ID and receipt shown |
-
-**Rollback Safety:** If persistence fails at step 27, lines 28-30 automatically restore inventory and remove the order record, maintaining consistency.
-
----
-
-#### **2.4.3 Order Status State Diagram**
-
+| 1-4 | User starts checkout; `Store` finds the customer and checks the cart | Empty cart is rejected |
+| 5-7 | Order is built from the cart; discount is applied; a payment object is created | Discount must be between 0 and 1; card digits are validated |
+| 8-11 | `mark_paid` checks status, amount and stock for every item **before** taking payment | Any failure raises `ValidationError` and changes nothing |
+| 12-15 | Payment is processed, stock is reduced, order becomes PAID | |
+| 16-18 | Order is stored, cart is cleared, confirmation is shown | |
+ 
+#### 2.4.3 Order Status State Diagram
+ 
 ```mermaid
 stateDiagram-v2
     [*] --> PENDING : Order.from_cart()
@@ -336,441 +324,143 @@ stateDiagram-v2
     PAID --> CANCELLED : cancel()
     CANCELLED --> [*]
 ```
-
-**State Definitions:**
-
+ 
 | State | Meaning | Transitions |
 |-------|---------|-------------|
-| **PENDING** | Order created; awaiting payment | → PAID (payment success) or → CANCELLED (customer cancels) |
-| **PAID** | Payment processed successfully; stock deducted | → CANCELLED (customer requests refund) or → [*] (completed) |
-| **CANCELLED** | Order terminated; stock restored if applicable | → [*] (terminal state) |
-
-**Business Rules by State:**
-- **PENDING:** Stock is held but not deducted; order can be cancelled anytime
-- **PAID:** Stock is committed; cancellation triggers refund workflow and inventory restoration
-- **CANCELLED:** Final; no further state changes allowed
-
+| **PENDING** | Order created, not yet paid; stock untouched | PAID (payment succeeds) or CANCELLED |
+| **PAID** | Payment accepted; stock deducted | CANCELLED (stock is restored) |
+| **CANCELLED** | Order ended | Terminal; cancelling again raises an error |
+ 
 ---
-
-## 3. Business Rules (BR-01 to BR-04)
-
+ 
+## 3. Business Rules
+ 
 ### BR-01: Stock Validation on Purchase
-**Requirement:** Customers cannot purchase more units than available inventory.
-
-**Implementation:**
+Customers cannot buy more units than are in stock. The check runs inside `Order.mark_paid`, **before** the payment is processed, so a failed check never charges anyone or changes stock.
+ 
 ```python
-# Validated at two checkpoints:
-# 1. When adding to cart
-cart.add_item(product, quantity)  # Raises BusinessRuleError if qty > stock
-
-# 2. Before checkout (re-check for concurrent orders)
-store.checkout(customer, payment)  # Raises BusinessRuleError if stock insufficient
+for item in self._items:
+    if not item.product.is_in_stock(item.quantity):
+        raise ValidationError(f"not enough stock for {item.product.name}")
 ```
-
-**Rationale:** Double validation prevents race conditions and ensures consistency.
-
----
-
+ 
 ### BR-02: Non-Empty Checkout
-**Requirement:** Customers cannot proceed to checkout with an empty cart.
-
-**Implementation:**
+A customer cannot check out with an empty cart.
+ 
 ```python
-def checkout(self, customer: Customer, payment: Payment) -> Order:
-    if not customer.cart.items:
-        raise ValidationError("Cannot checkout with an empty cart")
+if cart.is_empty():
+    raise ValidationError("cart cannot be empty")
 ```
-
-**Rationale:** Prevents meaningless order creation and ensures business value.
-
----
-
+ 
 ### BR-03: Product Price Validation
-**Requirement:** Product prices must be positive values.
-
-**Implementation:**
+Product prices must be numbers greater than zero.
+ 
 ```python
-class Product:
-    @property
-    def price(self) -> float:
-        return self._price
-    
-    @price.setter
-    def price(self, value: float) -> None:
-        if value <= 0:
-            raise ValidationError("Product price must be positive")
-        self._price = value
+@price.setter
+def price(self, value):
+    if not isinstance(value, (int, float)) or value <= 0:
+        raise ValidationError("the price must be bigger than zero")
+    self._price = value
 ```
-
-**Rationale:** Ensures data integrity and prevents illogical pricing scenarios.
-
----
-
-### BR-04: Automatic Order Total Calculation
-**Requirement:** Order total is calculated automatically from line items; never stored independently or manually edited.
-
-**Implementation:**
+ 
+### BR-04: Automatic Order Total
+The order total is always calculated from the line items and the discount; it is never stored or edited by hand.
+ 
 ```python
-class Order:
-    @property
-    def total(self) -> float:
-        """Always calculated from current items; read-only"""
-        return sum(item.subtotal for item in self.items)
+def total(self):
+    subtotal = sum(item.subtotal() for item in self._items)
+    return max(0.0, subtotal * (1 - self._discount_rate))
 ```
-
-**Rationale:** Single source of truth; eliminates rounding inconsistencies and audit issues.
-
+ 
 ---
-
+ 
 ## 4. Directory Structure
-
+ 
 ```
-pyhon-project/
-├── Enums/                      # Enumeration definitions
+ecommerce/
+├── Enums/                  # Enumerations
 │   ├── __init__.py
-│   └── order_status.py         # OrderStatus enum
-├── data/                       # Runtime data storage
-│   ├── customers.json
-│   ├── products.json
-│   ├── categories.json
-│   ├── orders.json
-│   └── ...
-├── data_seed/                  # Initial data population scripts
+│   └── enums.py            # OrderStatus
+├── data/                   # Created automatically: saved JSON files
+├── data_seed/              # Sample / starting data
+├── docs/                   # Documentation
+├── file_manager/           # Persistence layer
 │   ├── __init__.py
-│   └── seed.py                 # Database initialization fixtures
-├── docs/                       # Documentation
-│   ├── README.md
-│   ├── API.md
-│   ├── ARCHITECTURE.md
-│   └── UML/                    # UML diagrams
-├── file_manager/               # Persistence layer
+│   └── file_manager.py     # JSON save/load and CSV import
+├── gui/                    # Presentation layer
 │   ├── __init__.py
-│   └── file_manager.py         # JSON I/O abstraction
-├── gui/                        # User interface layer
+│   └── app.py              # tkinter application (StoreApp)
+├── models/                 # Domain model
 │   ├── __init__.py
-│   ├── main_window.py          # Main application window
-│   ├── customer_view.py        # Customer dashboard
-│   ├── product_view.py         # Product catalog view
-│   ├── cart_view.py            # Shopping cart interface
-│   └── order_view.py           # Order history/confirmation
-├── models/                     # Domain model (business logic)
-│   ├── __init__.py
-│   ├── customer.py
-│   ├── product.py
-│   ├── category.py
 │   ├── cart.py
+│   ├── cartitem.py
+│   ├── category.py
+│   ├── customer.py
 │   ├── order.py
-│   ├── payment.py              # Abstract + implementations
-│   ├── discount.py             # Abstract + implementations
-│   └── exceptions.py           # Custom exception hierarchy
-├── store/                      # Application service layer
+│   ├── orderitem.py
+│   ├── payment.py          # Payment, CardPayment, CashPayment
+│   └── product.py
+├── store/                  # Application service layer
 │   ├── __init__.py
-│   └── store.py                # Store facade
-├── tests/                      # Unit and integration tests
-│   ├── __init__.py
-│   ├── test_models.py
-│   ├── test_store.py
-│   ├── test_file_manager.py
-│   └── test_gui.py
+│   └── store.py            # Store facade
+├── tests/                  # Tests
 ├── .gitignore
-├── main.py                     # CLI entry point
-├── run_gui.py                  # GUI application launcher
-├── requirements.txt            # Python dependencies
-└── README.md                   # This file
+├── exceptions.py           # ValidationError
+├── main.py                 # Console entry point
+├── run_gui.py              # GUI launcher
+├── requirements.txt
+└── README.md
 ```
-
+ 
 ---
-
-## 5. Installation & Setup
-
+ 
+## 5. Installation and Setup
+ 
 ### 5.1 Prerequisites
-
-- Python 3.8 or higher
-- pip package manager
-- Virtual environment (recommended)
-
+ 
+- Python 3.10 or newer
+- tkinter (included with the standard Python installer on Windows and macOS; on Debian/Ubuntu install it with `sudo apt install python3-tk`)
+- A virtual environment is recommended
 ### 5.2 Installation Steps
-
+ 
 ```bash
 # Clone the repository
 git clone https://github.com/NeGaT1Vee/pyhon-project.git
 cd pyhon-project
-
-# Create and activate virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Initialize database with seed data
-python data_seed/seed.py
+ 
+# Create and activate a virtual environment
+python -m venv .venv
+.venv\Scripts\activate        # Windows
+source .venv/bin/activate     # macOS / Linux
 ```
-
-### 5.3 Dependencies
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| PyQt5 | 5.15.x | GUI framework |
-| requests | 2.28.x | HTTP client (optional extensions) |
-| pytest | 7.x | Testing framework |
-| pytest-cov | 4.x | Coverage analysis |
-
-See `requirements.txt` for complete list.
-
+ 
+The application itself uses only the Python standard library, so no extra packages are required to run it. Install anything listed in `requirements.txt` (for example a test runner) with:
+ 
+```bash
+pip install -r requirements.txt
+```
+ 
 ---
-
+ 
 ## 6. Usage
-
-### 6.1 Launch GUI Application
-
+ 
+### 6.1 Launch the GUI
+ 
+Run this from the project root folder:
+ 
 ```bash
 python run_gui.py
 ```
-
-Starts the main application window with:
-- Customer login/registration
-- Product browsing by category
-- Shopping cart management
-- Checkout and payment processing
-- Order history view
-
-### 6.2 Command-Line Usage
-
-```bash
-python main.py
-```
-
-Interactive CLI for:
-- Direct store operations
-- Batch data imports
-- Administrative functions
-- Testing without GUI
-
-### 6.3 Common Workflows
-
-#### **Customer Registration & Shopping**
-```python
-from store import Store
-
-store = Store()
-
-# Register
-customer = store.register_customer("john@example.com", "password123", "John Doe")
-
-# Browse products
-categories = store.get_all_categories()
-products = store.get_products_by_category(categories[0])
-
-# Add to cart
-store.add_to_cart(customer, products[0], quantity=2)
-
-# Checkout
-from models.payment import CardPayment
-payment = CardPayment(card_number="4111111111111111")
-order = store.checkout(customer, payment)
-
-print(f"Order #{order.id} placed successfully. Total: ${order.total:.2f}")
-```
-
-#### **Apply Discount**
-```python
-from models.discount import PercentageDiscount
-
-discount = PercentageDiscount(percentage=10)
-discounted_total = discount.apply(order.total)  # 10% off
-```
-
-#### **Process Payment**
-```python
-from models.payment import WalletPayment
-
-wallet = WalletPayment(account_balance=100.00)
-if wallet.process(order.total):
-    print("Payment successful")
-else:
-    print("Insufficient balance")
-```
-
----
-
-## 7. Testing
-
-### 7.1 Run All Tests
-
-```bash
-pytest tests/ -v
-```
-
-### 7.2 Generate Coverage Report
-
-```bash
-pytest tests/ --cov=models --cov=store --cov-report=html
-```
-
-### 7.3 Test Categories
-
-| Module | Tests | Coverage Goal |
-|--------|-------|---------------|
-| `models/` | 40+ unit tests | 95% |
-| `store/` | 20+ integration tests | 90% |
-| `file_manager/` | 15+ I/O tests | 90% |
-| `gui/` | 10+ functional tests | 70% |
-
-
----
-
-## 8. Data Persistence
-
-### 8.1 JSON Schema
-
-**customers.json:**
-```json
-{
-  "customers": [
-    {
-      "id": "cust_001",
-      "email": "customer@example.com",
-      "name": "John Doe",
-      "password_hash": "...",
-      "created_at": "2024-01-15T10:30:00Z",
-      "cart": {
-        "items": [
-          {"product_id": "prod_001", "quantity": 2, "unit_price": 29.99}
-        ]
-      },
-      "order_history": ["order_001", "order_002"]
-    }
-  ]
-}
-```
-
-**orders.json:**
-```json
-{
-  "orders": [
-    {
-      "id": "order_001",
-      "customer_id": "cust_001",
-      "status": "PAID",
-      "items": [
-        {
-          "product_id": "prod_001",
-          "product_name": "Laptop",
-          "quantity": 1,
-          "unit_price": 999.99,
-          "subtotal": 999.99
-        }
-      ],
-      "discount": {"type": "percentage", "value": 10},
-      "payment": {"type": "card", "method": "VISA"},
-      "total": 899.99,
-      "created_at": "2024-01-15T11:00:00Z",
-      "completed_at": null
-    }
-  ]
-}
-```
-
-### 8.2 Transaction Safety
-
-All write operations follow ACID principles:
-1. **Atomicity:** All-or-nothing checkout (stock deduction rollback on failure)
-2. **Consistency:** Business rules enforced before persisting
-3. **Isolation:** File-level locking prevents concurrent corruption
-4. **Durability:** Synchronous writes to disk
-
----
-
-## 9. Development Workflow
-
-### 9.1 Development Setup
-
-```bash
-# Install dev dependencies
-pip install -r requirements-dev.txt
-
-# Pre-commit hooks for code quality
-pre-commit install
-
-# Enable git flow
-git flow init
-```
-
-### 9.2 Code Organization Principles
-
-1. **One class per file** (except related value objects)
-2. **Type hints** on all method signatures
-3. **Docstrings** for public APIs (Google style)
-4. **Private attributes** prefixed with underscore
-5. **No circular imports** between layers
-6. **Custom exceptions** for domain errors
-
-### 9.3 Git Workflow
-
-```bash
-# Feature branch
-git flow feature start add-inventory-management
-git add .
-git commit -m "Add inventory management feature"
-git flow feature finish add-inventory-management
-
-# Release branch
-git flow release start 1.1.0
-git flow release finish 1.1.0
-```
-
----
-
-## 10. Known Limitations & Future Work
-
-### 10.1 Current Limitations
-
-| Limitation | Impact | Workaround |
-|-----------|--------|-----------|
-| File-based storage | Not suitable for concurrent users | Use database migration in v2.0 |
-| No authentication tokens | Sessions lost on app restart | Implement JWT in next version |
-| Single-threaded GUI | Can freeze on large data loads | Implement async/await patterns |
-| No inventory sync | Orders placed simultaneously may fail | Add optimistic locking |
-
-
-
----
-
-## 11. Troubleshooting
-
-### 11.1 Common Issues
-
-**Issue:** `ModuleNotFoundError: No module named 'PyQt5'`
-```bash
-# Solution: Install GUI dependencies
-pip install -r requirements.txt
-```
-
-**Issue:** `FileNotFoundError: [Errno 2] No such file or directory: 'data/customers.json'`
-```bash
-# Solution: Initialize database
-python data_seed/seed.py
-```
-
-**Issue:** Permission denied on data files
-```bash
-# Solution: Fix file permissions
-chmod 644 data/*.json
-```
-
----
-
-## 12. Contact & Support
-| Contact Method | Details |
-|---|---|
-| **Repository Issues** | [GitHub Issues](https://github.com/NeGaT1Vee/pyhon-project/issues) |
-| **Authors** | [NeGaT1Vee](https://github.com/NeGaT1Vee) • [Mohamed Osama](https://github.com/mohamedosamahieba2892005-crypto) • [Osama Hatem](https://github.com/osama1hatem2abdelkreem3) |
-| **Email** | Contact via GitHub |
-
----
-
-
-**Document Version:** 1.0  
-**Last Updated:** October 2026  
-**Status:** Active
+ 
+Tabs in the window:
+ 
+| Tab | What you can do |
+|-----|-----------------|
+| Categories | Add categories, see how many products each has |
+| Products | Search, add and remove products |
+| Customers | Add and list customers |
+| Shop / Cart | Pick a customer and product, add to cart, choose card or cash, enter a discount %, check out |
+| Orders | View orders and cancel the selected one |
+| Dashboard | Customers, products, orders today, total sales |
+ 
+Press **Save data** (or close the window) to write the data to the `data` folder. It is loaded again the next time the app starts.
